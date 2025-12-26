@@ -16,7 +16,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    ".onrender.com",
+    ".onrender.com",  # allow all subdomains on Render
 ]
 
 # =====================
@@ -30,11 +30,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third-party apps
     'rest_framework',
     'django_filters',
     'corsheaders',
     'drf_yasg',
 
+    # Your apps
     'accounts',
     'opportunities',
     'applications',
@@ -45,9 +47,9 @@ INSTALLED_APPS = [
 # MIDDLEWARE
 # =====================
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # must be at top
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static files on Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -147,8 +149,20 @@ GOOGLE_MAPS_API_KEY = 'AIzaSyDVrbBoid3Bo3simqWgjnF7-WhZtUJ2n6I'
 # =====================
 # CORS
 # =====================
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+if DEBUG:
+    # Development: allow all origins
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    # Production: allow only your frontend domain
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        "https://community-connect-oict.onrender.com",
+    ]
+CORS_ALLOW_CREDENTIALS = True
 
+# =====================
+# SECURITY SETTINGS FOR RENDER
+# =====================
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
