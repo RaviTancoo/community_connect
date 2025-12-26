@@ -20,3 +20,9 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         # Return the currently authenticated user
         return self.request.user
+
+# in views.py of any app, e.g., accounts/views.py
+from django.shortcuts import render
+
+def index(request):
+    return render(request, "index.html")

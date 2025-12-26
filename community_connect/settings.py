@@ -4,8 +4,13 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-+xcrr16j1+)mue$3a5wtlg87k2#x6bhr@+upgm-m$4fn=gbuc^")
-
+# =====================
+# SECURITY
+# =====================
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-+xcrr16j1+)mue$3a5wtlg87k2#x6bhr@+upgm-m$4fn=gbuc^"
+)
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [
@@ -14,6 +19,9 @@ ALLOWED_HOSTS = [
     ".onrender.com",
 ]
 
+# =====================
+# APPLICATIONS
+# =====================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,6 +32,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'corsheaders',
+    'drf_yasg',
 
     'accounts',
     'opportunities',
@@ -31,9 +41,13 @@ INSTALLED_APPS = [
     'notifications',
 ]
 
+# =====================
+# MIDDLEWARE
+# =====================
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static files on Render
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -42,16 +56,26 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# =====================
+# URLS / WSGI
+# =====================
 ROOT_URLCONF = 'community_connect.urls'
-
 WSGI_APPLICATION = 'community_connect.wsgi.application'
 
+# =====================
+# DATABASE
+# =====================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# =====================
+# AUTH
+# =====================
+AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -60,17 +84,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# =====================
+# INTERNATIONALIZATION
+# =====================
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# =====================
+# STATIC FILES
+# =====================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-AUTH_USER_MODEL = 'accounts.User'
-
+# =====================
+# REST FRAMEWORK
+# =====================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -89,8 +120,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "YOUR_KEY_HERE")
-
+# =====================
+# TEMPLATES
+# =====================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -106,3 +138,17 @@ TEMPLATES = [
         },
     },
 ]
+
+# =====================
+# EXTERNAL API
+# =====================
+GOOGLE_MAPS_API_KEY = 'AIzaSyDVrbBoid3Bo3simqWgjnF7-WhZtUJ2n6I'
+
+# =====================
+# CORS
+# =====================
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
